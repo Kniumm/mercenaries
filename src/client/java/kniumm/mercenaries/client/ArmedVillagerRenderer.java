@@ -2,11 +2,13 @@ package kniumm.mercenaries.client;
 
 import kniumm.mercenaries.AbstractArmedVillager;
 import net.minecraft.client.model.monster.illager.IllagerModel;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
 import net.minecraft.client.renderer.entity.state.IllagerRenderState;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.illager.AbstractIllager;
 import net.minecraft.world.item.CrossbowItem;
 import org.jspecify.annotations.NonNull;
@@ -15,6 +17,19 @@ public abstract class ArmedVillagerRenderer<T extends AbstractArmedVillager, S e
     protected ArmedVillagerRenderer(final EntityRendererProvider.Context context, final IllagerModel<S> model, final float shadow) {
         super(context, model, shadow);
         this.addLayer(new CustomHeadLayer<>(this, context.getModelSet(), context.getPlayerSkinRenderCache()));
+
+        ArmorModelSet<ArmedVillagerArmorModel<S>> armorModels =
+                ArmorModelSet.bake(
+                        ModEntityModelLayers.ARMED_VILLAGER_ARMOR_LAYERS,
+                        context.getModelSet(),
+                        ArmedVillagerArmorModel::new
+                );
+
+        this.addLayer(new ArmedVillagerArmorLayer<>(
+                this,
+                armorModels,
+                context.getEquipmentRenderer()
+        ));
     }
 
     public void extractRenderState(final @NonNull T entity, final @NonNull S state, final float partialTicks) {
@@ -27,5 +42,10 @@ public abstract class ArmedVillagerRenderer<T extends AbstractArmedVillager, S e
         state.ticksUsingItem = entity.getTicksUsingItem(partialTicks);
         state.attackAnim = entity.getAttackAnim(partialTicks);
         state.isAggressive = entity.isAggressive();
+
+        state.headEquipment = entity.getItemBySlot(EquipmentSlot.HEAD);
+        state.chestEquipment = entity.getItemBySlot(EquipmentSlot.CHEST);
+        state.legsEquipment = entity.getItemBySlot(EquipmentSlot.LEGS);
+        state.feetEquipment = entity.getItemBySlot(EquipmentSlot.FEET);
     }
 }

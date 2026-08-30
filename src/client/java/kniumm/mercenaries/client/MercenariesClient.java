@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 public class MercenariesClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ModEntityModelLayers.registerModelLayers();
+		ModEntityModelLayers.initialize();
 		EntityRenderers.register(ModEntityTypes.MERCENARY, MercenaryRenderer::new);
 	}
 }

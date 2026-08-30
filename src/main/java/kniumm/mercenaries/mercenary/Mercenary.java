@@ -2,6 +2,7 @@ package kniumm.mercenaries.mercenary;
 
 import kniumm.mercenaries.AbstractArmedVillager;
 import kniumm.mercenaries.DefendVillageTargetGoal;
+import kniumm.mercenaries.Mercenaries;
 import kniumm.mercenaries.RangedCrossbowAttackGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -59,7 +60,7 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
     public Mercenary(final EntityType<? extends AbstractVillager> type, final Level level) {
         super(type, level);
 
-        this.getNavigation().setCanOpenDoors(true);
+        //this.getNavigation().setCanOpenDoors(true);
     }
 
     protected void registerGoals() {

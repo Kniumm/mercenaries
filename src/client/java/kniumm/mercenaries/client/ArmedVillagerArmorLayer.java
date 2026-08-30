@@ -1,0 +1,70 @@
+package kniumm.mercenaries.client;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.monster.illager.IllagerModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.IllagerRenderState;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.client.resources.model.EquipmentClientInfo.LayerType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.Equippable;
+import org.jspecify.annotations.NonNull;
+
+public class ArmedVillagerArmorLayer<S extends IllagerRenderState, M extends IllagerModel<S>, A extends HumanoidModel<S>> extends RenderLayer<S, M> {
+    private final ArmorModelSet<A> modelSet;
+    private final ArmorModelSet<A> babyModelSet;
+    private final EquipmentLayerRenderer equipmentRenderer;
+
+    public ArmedVillagerArmorLayer(final RenderLayerParent<S, M> renderer, final ArmorModelSet<A> modelSet, final EquipmentLayerRenderer equipmentRenderer) {
+        this(renderer, modelSet, modelSet, equipmentRenderer);
+    }
+
+    public ArmedVillagerArmorLayer(final RenderLayerParent<S, M> renderer, final ArmorModelSet<A> modelSet, final ArmorModelSet<A> babyModelSet, final EquipmentLayerRenderer equipmentRenderer) {
+        super(renderer);
+        this.modelSet = modelSet;
+        this.babyModelSet = babyModelSet;
+        this.equipmentRenderer = equipmentRenderer;
+    }
+
+    public static boolean shouldRender(final @NonNull ItemStack itemStack, final EquipmentSlot slot) {
+        Equippable equippable = itemStack.get(DataComponents.EQUIPPABLE);
+        return equippable != null && shouldRender(equippable, slot);
+    }
+
+    private static boolean shouldRender(final @NonNull Equippable equippable, final EquipmentSlot slot) {
+        return equippable.assetId().isPresent() && equippable.slot() == slot;
+    }
+
+    public void submit(final @NonNull PoseStack poseStack, final @NonNull SubmitNodeCollector submitNodeCollector, final int lightCoords, final @NonNull S state, final float yRot, final float xRot) {
+        this.renderArmorPiece(poseStack, submitNodeCollector, state.chestEquipment, EquipmentSlot.CHEST, lightCoords, state);
+        this.renderArmorPiece(poseStack, submitNodeCollector, state.legsEquipment, EquipmentSlot.LEGS, lightCoords, state);
+        this.renderArmorPiece(poseStack, submitNodeCollector, state.feetEquipment, EquipmentSlot.FEET, lightCoords, state);
+        this.renderArmorPiece(poseStack, submitNodeCollector, state.headEquipment, EquipmentSlot.HEAD, lightCoords, state);
+    }
+
+    private void renderArmorPiece(final PoseStack poseStack, final SubmitNodeCollector submitNodeCollector, final @NonNull ItemStack itemStack, final EquipmentSlot slot, final int lightCoords, final S state) {
+        Equippable equippable = itemStack.get(DataComponents.EQUIPPABLE);
+        if (equippable != null && shouldRender(equippable, slot)) {
+            A model = this.getArmorModel(state, slot);
+            EquipmentClientInfo.LayerType layerType = state.isBaby && state.entityType != EntityTypes.ARMOR_STAND ? LayerType.HUMANOID_BABY : (this.usesInnerModel(slot) ? LayerType.HUMANOID_LEGGINGS : LayerType.HUMANOID);
+            this.equipmentRenderer.renderLayers(layerType, equippable.assetId().orElseThrow(), model, state, itemStack, poseStack, submitNodeCollector, lightCoords, state.outlineColor);
+        }
+    }
+
+    private @NonNull A getArmorModel(final @NonNull S state, final EquipmentSlot slot) {
+        return ((state.isBaby ? this.babyModelSet : this.modelSet).get(slot));
+    }
+
+    private boolean usesInnerModel(final EquipmentSlot slot) {
+        return slot == EquipmentSlot.LEGS;
+    }
+}
+
