@@ -17,6 +17,7 @@ public class Mercenaries implements ModInitializer {
 	public void onInitialize() {
 		ModEntityTypes.initialize();
 		ModEntityTypes.registerAttributes();
+		ModItems.initialize();
 	}
 
 	@Contract("_ -> new")
