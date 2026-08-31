@@ -15,7 +15,7 @@ import org.jspecify.annotations.NonNull;
 public class ModEntityTypes {
     public static final EntityType<Mercenary> MERCENARY = register(
             "mercenary",
-            EntityType.Builder.<Mercenary>of(Mercenary::new, MobCategory.CREATURE)
+            EntityType.Builder.<Mercenary>of(Mercenary::new, MobCategory.CREATURE).sized(0.6F, 1.95F)
     );
 
     private static <T extends Entity> @NonNull EntityType<T> register(String name, EntityType.@NonNull Builder<T> builder) {
