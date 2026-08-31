@@ -11,7 +11,7 @@ import net.minecraft.world.entity.monster.illager.AbstractIllager;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
-public class ArmedVillagerArmorModel<S extends HumanoidRenderState> extends HumanoidModel<S> {
+public class ArmedVillagerArmorModel<S extends IllagerRenderState> extends HumanoidModel<S> {
     public ArmedVillagerArmorModel(ModelPart root) {
         super(root);
     }
