@@ -5,7 +5,9 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.IllagerRenderState;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.monster.illager.AbstractIllager;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
