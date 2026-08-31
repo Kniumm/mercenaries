@@ -3,7 +3,6 @@ package kniumm.mercenaries.client;
 import kniumm.mercenaries.Mercenaries;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.monster.illager.IllagerModel;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Contract;
@@ -31,7 +30,7 @@ public class ModEntityModelLayers {
     }
 
     private static void registerModelLayers() {
-        ModelLayerRegistry.registerModelLayer(ModEntityModelLayers.MERCENARY, IllagerModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(ModEntityModelLayers.MERCENARY, ArmedVillagerModel::createBodyLayer);
     }
 
     private static void registerArmorModelLayers() {
