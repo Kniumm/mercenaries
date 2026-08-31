@@ -1,5 +1,6 @@
 package kniumm.mercenaries.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import kniumm.mercenaries.AbstractArmedVillager;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -46,5 +47,11 @@ public abstract class ArmedVillagerRenderer<T extends AbstractArmedVillager, S e
         state.chestEquipment = entity.getItemBySlot(EquipmentSlot.CHEST);
         state.legsEquipment = entity.getItemBySlot(EquipmentSlot.LEGS);
         state.feetEquipment = entity.getItemBySlot(EquipmentSlot.FEET);
+    }
+
+    public void scale(final S state, final @NonNull PoseStack poseStack) {
+        float scale = 0.9375F;
+
+        poseStack.scale(scale, scale, scale);
     }
 }
