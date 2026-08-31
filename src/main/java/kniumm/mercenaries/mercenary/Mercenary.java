@@ -2,7 +2,6 @@ package kniumm.mercenaries.mercenary;
 
 import kniumm.mercenaries.AbstractArmedVillager;
 import kniumm.mercenaries.DefendVillageTargetGoal;
-import kniumm.mercenaries.Mercenaries;
 import kniumm.mercenaries.RangedCrossbowAttackGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -70,6 +69,7 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
         this.goalSelector.addGoal(2, new OpenDoorGoal(this, true));
         this.goalSelector.addGoal(2, new MoveBackToVillageGoal(this, 0.6, false));
         this.goalSelector.addGoal(3, new RangedCrossbowAttackGoal<>(this, 1.0F, 8.0F));
+        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0F, true));
         this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 15.0F));
@@ -172,6 +172,9 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(final @NonNull ServerLevelAccessor level, final @NonNull DifficultyInstance difficulty, final @NonNull EntitySpawnReason spawnReason, final @Nullable SpawnGroupData groupData) {
         RandomSource random = level.getRandom();
+
+        this.setItemSlot(EquipmentSlot.MAINHAND, this.createSpawnWeapon());
+        this.setItemSlot(EquipmentSlot.OFFHAND, this.createSpawnOffhand());
         this.populateDefaultEquipmentSlots(random, difficulty);
         this.populateDefaultEquipmentEnchantments(level, random, difficulty);
         return super.finalizeSpawn(level, difficulty, spawnReason, groupData);
@@ -184,7 +187,30 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
 
     @Override
     protected void populateDefaultEquipmentSlots(final @NonNull RandomSource random, final @NonNull DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CROSSBOW));
+        this.maybeWearArmor(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET), random);
+        this.maybeWearArmor(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE), random);
+        this.maybeWearArmor(EquipmentSlot.LEGS, new ItemStack(Items.IRON_LEGGINGS), random);
+        this.maybeWearArmor(EquipmentSlot.FEET, new ItemStack(Items.IRON_BOOTS), random);
+    }
+
+    private void maybeWearArmor(final EquipmentSlot slot, final ItemStack itemStack, final @NonNull RandomSource random) {
+        if (random.nextFloat() < 0.1F) {
+            this.setItemSlot(slot, itemStack);
+        }
+    }
+
+    private @NonNull ItemStack createSpawnWeapon() {
+        return (double)this.random.nextFloat() < (double)0.5F ? new ItemStack(Items.CROSSBOW) : new ItemStack(this.random.nextInt(2) == 0 ? Items.IRON_AXE : Items.IRON_SWORD);
+    }
+
+    private @NonNull ItemStack createSpawnOffhand() {
+        ItemStack weapon = this.getMainHandItem();
+
+        if (weapon.is(Items.CROSSBOW)) {
+            return ItemStack.EMPTY;
+        }
+
+        return (double)this.random.nextFloat() < (double)0.5F ? new ItemStack(Items.SHIELD) : ItemStack.EMPTY;
     }
 
     @Override
