@@ -105,8 +105,8 @@ public class ArmedVillagerModel<S extends IllagerRenderState> extends HumanoidMo
 
     @Contract(" -> new")
     public static @NonNull ArmorModelSet<LayerDefinition> createArmorModelSet() {
-        CubeDeformation inner = new CubeDeformation(1.0F);
-        CubeDeformation outer = new CubeDeformation(1.05F);
+        CubeDeformation inner = new CubeDeformation(0.5F);
+        CubeDeformation outer = new CubeDeformation(1.0F);
 
         return createArmorLayerSet(inner, outer);
     }
