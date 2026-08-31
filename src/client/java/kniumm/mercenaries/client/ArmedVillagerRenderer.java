@@ -17,11 +17,11 @@ public abstract class ArmedVillagerRenderer<T extends AbstractArmedVillager, S e
         super(context, model, shadow);
         this.addLayer(new CustomHeadLayer<>(this, context.getModelSet(), context.getPlayerSkinRenderCache()));
 
-        ArmorModelSet<ArmedVillagerArmorModel<S>> armorModels =
+        ArmorModelSet<ArmedVillagerModel<S>> armorModels =
                 ArmorModelSet.bake(
                         ModEntityModelLayers.ARMED_VILLAGER_ARMOR_LAYERS,
                         context.getModelSet(),
-                        ArmedVillagerArmorModel::new
+                        ArmedVillagerModel::new
                 );
 
         this.addLayer(new ArmedVillagerArmorLayer<>(

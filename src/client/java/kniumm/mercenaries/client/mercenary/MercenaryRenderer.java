@@ -2,6 +2,7 @@ package kniumm.mercenaries.client.mercenary;
 
 import kniumm.mercenaries.Mercenaries;
 import kniumm.mercenaries.client.ArmedVillagerModel;
+import kniumm.mercenaries.client.ModEntityModelLayers;
 import kniumm.mercenaries.mercenary.Mercenary;
 import kniumm.mercenaries.client.ArmedVillagerRenderer;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -15,7 +16,7 @@ public class MercenaryRenderer extends ArmedVillagerRenderer<Mercenary, IllagerR
     private static final Identifier MERCENARY = Identifier.fromNamespaceAndPath(Mercenaries.MOD_ID, "textures/entity/mercenary.png");
 
     public MercenaryRenderer(final EntityRendererProvider.Context context) {
-        super(context, new ArmedVillagerModel<>(context.bakeLayer(ModelLayers.PILLAGER)), 0.5F);
+        super(context, new ArmedVillagerModel<>(context.bakeLayer(ModEntityModelLayers.MERCENARY)), 0.5F);
         this.addLayer(new ItemInHandLayer<>(this));
     }
 

@@ -1,21 +1,22 @@
 package kniumm.mercenaries.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.AnimationUtils;
-import net.minecraft.client.model.ArmedModel;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HeadedModel;
+import net.minecraft.client.model.*;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.state.IllagerRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.monster.illager.AbstractIllager;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 
-public class ArmedVillagerModel<S extends IllagerRenderState> extends EntityModel<S> implements ArmedModel<S>, HeadedModel {
+public class ArmedVillagerModel<S extends IllagerRenderState> extends HumanoidModel<S> {
     private final ModelPart head;
     private final ModelPart hat;
+    private final ModelPart bodyOverlay;
     private final ModelPart leftLeg;
     private final ModelPart rightLeg;
     private final ModelPart rightArm;
@@ -26,6 +27,7 @@ public class ArmedVillagerModel<S extends IllagerRenderState> extends EntityMode
         this.head = root.getChild("head");
         this.hat = this.head.getChild("hat");
         this.hat.visible = false;
+        this.bodyOverlay = root.getChild("body_overlay");
         this.leftLeg = root.getChild("left_leg");
         this.rightLeg = root.getChild("right_leg");
         this.leftArm = root.getChild("left_arm");
@@ -36,17 +38,118 @@ public class ArmedVillagerModel<S extends IllagerRenderState> extends EntityMode
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
         PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -10.0F, -4.0F, 8.0F, 10.0F, 8.0F), PartPose.offset(0.0F, 0.0F, 0.0F));
-        head.addOrReplaceChild("hat", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -10.0F, -4.0F, 8.0F, 12.0F, 8.0F, new CubeDeformation(0.45F)), PartPose.ZERO);
-        head.addOrReplaceChild("nose", CubeListBuilder.create().texOffs(24, 0).addBox(-1.0F, -1.0F, -6.0F, 2.0F, 4.0F, 2.0F), PartPose.offset(0.0F, -2.0F, 0.0F));
-        root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(16, 20).addBox(-4.0F, 0.0F, -3.0F, 8.0F, 12.0F, 6.0F).texOffs(0, 38).addBox(-4.0F, 0.0F, -3.0F, 8.0F, 20.0F, 6.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, 0.0F, 0.0F));
-        root.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 22).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F), PartPose.offset(-2.0F, 12.0F, 0.0F));
-        root.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(0, 22).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F), PartPose.offset(2.0F, 12.0F, 0.0F));
-        root.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(40, 46).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F), PartPose.offset(-5.0F, 2.0F, 0.0F));
-        root.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(40, 46).mirror().addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F), PartPose.offset(5.0F, 2.0F, 0.0F));
+        head.addOrReplaceChild(
+                "hat",
+                CubeListBuilder.create()
+                        .texOffs(32, 0)
+                        .addBox(-4.0F, -10.0F, -4.0F, 8.0F, 12.0F, 8.0F,
+                                new CubeDeformation(0.45F)
+                        ),
+                PartPose.ZERO
+        );
+        head.addOrReplaceChild(
+                "nose",
+                CubeListBuilder.create()
+                        .texOffs(24, 0)
+                        .addBox(-1.0F, -1.0F, -6.0F, 2.0F, 4.0F, 2.0F),
+                PartPose.offset(0.0F, -2.0F, 0.0F)
+        );
+        root.addOrReplaceChild(
+                "body",
+                CubeListBuilder.create()
+                        .texOffs(16, 20)
+                        .addBox(-4.0F, 0.0F, -3.0F, 8.0F, 12.0F, 6.0F),
+                PartPose.ZERO
+        );
+        root.addOrReplaceChild(
+                "body_overlay",
+                CubeListBuilder.create()
+                        .texOffs(0, 38)
+                        .addBox(-4.0F, 0.0F, -3.0F, 8.0F, 20.0F, 6.0F,
+                                new CubeDeformation(0.5F)
+                        ),
+                PartPose.ZERO
+        );
+        root.addOrReplaceChild(
+                "right_leg",
+                CubeListBuilder.create()
+                        .texOffs(0, 22)
+                        .addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F),
+                PartPose.offset(-2.0F, 12.0F, 0.0F)
+        );
+        root.addOrReplaceChild(
+                "left_leg",
+                CubeListBuilder.create()
+                        .texOffs(0, 22).mirror()
+                        .addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F),
+                PartPose.offset(2.0F, 12.0F, 0.0F)
+        );
+        root.addOrReplaceChild(
+                "right_arm",
+                CubeListBuilder.create()
+                        .texOffs(40, 46)
+                        .addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F),
+                PartPose.offset(-5.0F, 2.0F, 0.0F)
+        );
+        root.addOrReplaceChild(
+                "left_arm",
+                CubeListBuilder.create()
+                        .texOffs(40, 46)
+                        .mirror()
+                        .addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F),
+                PartPose.offset(5.0F, 2.0F, 0.0F)
+        );
+
         return LayerDefinition.create(mesh, 64, 64);
     }
 
+    @Contract(" -> new")
+    public static @NonNull ArmorModelSet<LayerDefinition> createArmorModelSet() {
+        CubeDeformation inner = new CubeDeformation(1.0F);
+        CubeDeformation outer = new CubeDeformation(1.05F);
+
+        return createArmorLayerSet(inner, outer);
+    }
+
+    @Contract("_, _ -> new")
+    public static @NonNull ArmorModelSet<LayerDefinition> createArmorLayerSet(final CubeDeformation innerDeformation, final CubeDeformation outerDeformation) {
+        return createArmorMeshSet(ArmedVillagerModel::createBaseArmorMesh, ADULT_ARMOR_PARTS_PER_SLOT, innerDeformation, outerDeformation).map((mesh) -> LayerDefinition.create(mesh, 64, 32));
+    }
+
+    private static @NonNull MeshDefinition createBaseArmorMesh(CubeDeformation deformation) {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -10.0F, -4.0F, 8.0F, 8.0F, 8.0F, deformation), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        head.addOrReplaceChild("hat", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, deformation.extend(0.5F)), PartPose.ZERO);
+
+        root.addOrReplaceChild(
+                "body",
+                CubeListBuilder.create()
+                        .texOffs(16, 16)
+                        .addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, deformation),
+                PartPose.offset(0.0F, 0.0F, 0.0F)
+        );
+
+        root.addOrReplaceChild(
+                "body_overlay",
+                CubeListBuilder.create()
+                        .texOffs(16, 16)
+                        .addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, deformation.extend(0.5F)),
+                PartPose.offset(0.0F, 0.0F, 0.0F)
+        );
+
+        root.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(40, 16).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, deformation), PartPose.offset(-5.0F, 2.0F, 0.0F));
+        root.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(40, 16).mirror().addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, deformation), PartPose.offset(5.0F, 2.0F, 0.0F));
+        root.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, deformation), PartPose.offset(-1.9F, 12.0F, 0.0F));
+        root.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(0, 16).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, deformation), PartPose.offset(1.9F, 12.0F, 0.0F));
+
+        return mesh;
+    }
+
     public void setupAnim(final S state) {
+        this.bodyOverlay.visible = state.chestEquipment.isEmpty() && state.legsEquipment.isEmpty();
+
         super.setupAnim(state);
         this.head.yRot = state.yRot * ((float) Math.PI / 180F);
         this.head.xRot = state.xRot * ((float) Math.PI / 180F);
@@ -127,7 +230,7 @@ public class ArmedVillagerModel<S extends IllagerRenderState> extends EntityMode
         this.rightArm.visible = !crossedArms;
     }
 
-    private ModelPart getArm(final HumanoidArm arm) {
+    public ModelPart getArm(final HumanoidArm arm) {
         return arm == HumanoidArm.LEFT ? this.leftArm : this.rightArm;
     }
 

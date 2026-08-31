@@ -36,7 +36,7 @@ public class ModEntityModelLayers {
     private static void registerArmorModelLayers() {
         ModelLayerRegistry.registerArmorModelLayers(
                 ARMED_VILLAGER_ARMOR_LAYERS,
-                ArmedVillagerArmorModel::createArmorModelSet
+                ArmedVillagerModel::createArmorModelSet
         );
     }
 
