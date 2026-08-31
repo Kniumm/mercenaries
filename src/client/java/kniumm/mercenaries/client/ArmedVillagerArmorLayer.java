@@ -2,7 +2,6 @@ package kniumm.mercenaries.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.monster.illager.IllagerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -18,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
 import org.jspecify.annotations.NonNull;
 
-public class ArmedVillagerArmorLayer<S extends IllagerRenderState, M extends IllagerModel<S>, A extends HumanoidModel<S>> extends RenderLayer<S, M> {
+public class ArmedVillagerArmorLayer<S extends IllagerRenderState, M extends ArmedVillagerModel<S>, A extends HumanoidModel<S>> extends RenderLayer<S, M> {
     private final ArmorModelSet<A> modelSet;
     private final ArmorModelSet<A> babyModelSet;
     private final EquipmentLayerRenderer equipmentRenderer;

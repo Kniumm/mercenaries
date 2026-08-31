@@ -1,7 +1,6 @@
 package kniumm.mercenaries.client;
 
 import kniumm.mercenaries.AbstractArmedVillager;
-import net.minecraft.client.model.monster.illager.IllagerModel;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -13,8 +12,8 @@ import net.minecraft.world.entity.monster.illager.AbstractIllager;
 import net.minecraft.world.item.CrossbowItem;
 import org.jspecify.annotations.NonNull;
 
-public abstract class ArmedVillagerRenderer<T extends AbstractArmedVillager, S extends IllagerRenderState> extends MobRenderer<T, S, IllagerModel<S>> {
-    protected ArmedVillagerRenderer(final EntityRendererProvider.Context context, final IllagerModel<S> model, final float shadow) {
+public abstract class ArmedVillagerRenderer<T extends AbstractArmedVillager, S extends IllagerRenderState> extends MobRenderer<T, S, ArmedVillagerModel<S>> {
+    protected ArmedVillagerRenderer(final EntityRendererProvider.Context context, final ArmedVillagerModel<S> model, final float shadow) {
         super(context, model, shadow);
         this.addLayer(new CustomHeadLayer<>(this, context.getModelSet(), context.getPlayerSkinRenderCache()));
 
