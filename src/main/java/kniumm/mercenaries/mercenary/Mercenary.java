@@ -59,7 +59,7 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
     public Mercenary(final EntityType<? extends AbstractVillager> type, final Level level) {
         super(type, level);
 
-        //this.getNavigation().setCanOpenDoors(true);
+        this.getNavigation().setCanOpenDoors(true);
     }
 
     protected void registerGoals() {
