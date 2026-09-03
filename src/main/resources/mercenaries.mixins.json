@@ -2,7 +2,9 @@
 	"required": true,
 	"package": "kniumm.mercenaries.mixin",
 	"compatibilityLevel": "JAVA_25",
-	"mixins": [],
+	"mixins": [
+		"StructureTemplatePoolAccessor"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	},
