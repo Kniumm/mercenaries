@@ -2,6 +2,7 @@ package kniumm.mercenaries;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import kniumm.mercenaries.allegiance.Allegiance;
 import kniumm.mercenaries.mixin.StructureTemplatePoolAccessor;
 import net.fabricmc.api.ModInitializer;
 
@@ -32,6 +33,7 @@ public class Mercenaries implements ModInitializer {
 		ModItems.initialize();
 
 		ServerLifecycleEvents.SERVER_STARTING.register(ModStructurePoolElements::initialize);
+		ServerLifecycleEvents.SERVER_STARTING.register(Allegiance::initialize);
 	}
 
 	@Contract("_ -> new")

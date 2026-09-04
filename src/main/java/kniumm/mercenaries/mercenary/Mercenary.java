@@ -3,6 +3,7 @@ package kniumm.mercenaries.mercenary;
 import kniumm.mercenaries.AbstractArmedVillager;
 import kniumm.mercenaries.DefendVillageTargetGoal;
 import kniumm.mercenaries.RangedCrossbowAttackGoal;
+import kniumm.mercenaries.allegiance.Allegiance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -191,6 +192,10 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
         this.maybeWearArmor(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE), random);
         this.maybeWearArmor(EquipmentSlot.LEGS, new ItemStack(Items.IRON_LEGGINGS), random);
         this.maybeWearArmor(EquipmentSlot.FEET, new ItemStack(Items.IRON_BOOTS), random);
+
+        if (this.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
+            this.maybeWearArmor(EquipmentSlot.HEAD, Allegiance.getAllegianceBannerInstance(), random);
+        }
     }
 
     private void maybeWearArmor(final EquipmentSlot slot, final ItemStack itemStack, final @NonNull RandomSource random) {
