@@ -22,7 +22,7 @@ public class ModStructurePoolElements {
         Identifier savannaBarracks = Identifier.fromNamespaceAndPath(Mercenaries.MOD_ID, "village/savanna/houses/barracks");
         Identifier taigaBarracks = Identifier.fromNamespaceAndPath(Mercenaries.MOD_ID, "village/taiga/houses/barracks");
 
-        StructurePoolHelper.addLegacyElementToPool(templatePoolRegistry, plainsPoolLocation, plainsBarracks, 5);
+        StructurePoolHelper.addLegacyElementToPool(templatePoolRegistry, plainsPoolLocation, plainsBarracks, 30);
         // StructurePoolHelper.addLegacyElementToPool(templatePoolRegistry, savannaPoolLocation, savannaBarracks, 5);
         // StructurePoolHelper.addLegacyElementToPool(templatePoolRegistry, taigaPoolLocation, taigaBarracks, 5);
     }
