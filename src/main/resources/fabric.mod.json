@@ -3,15 +3,15 @@
 	"id": "mercenaries",
 	"version": "${version}",
 	"name": "mercenaries",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Add mercenaries to Minecraft",
 	"authors": [
-		"Me!"
+		"Kniumm"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/Kniumm/mercenaries",
+		"sources": "https://github.com/Kniumm/mercenaries"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/mercenaries/icon.png",
 	"environment": "*",
 	"entrypoints": {
