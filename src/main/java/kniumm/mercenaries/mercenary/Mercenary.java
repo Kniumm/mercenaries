@@ -215,7 +215,9 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
             return ItemStack.EMPTY;
         }
 
-        return (double)this.random.nextFloat() < (double)0.5F ? new ItemStack(Items.SHIELD) : ItemStack.EMPTY;
+        ItemStack head = this.getItemBySlot(EquipmentSlot.HEAD);
+
+        return (double) this.random.nextFloat() < (double)0.5F ? ItemStack.EMPTY : head.is(Items.BANNER.red()) ? new ItemStack(Items.SHIELD) : Allegiance.getAllegianceShieldInstance();
     }
 
     @Override
@@ -272,9 +274,8 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
 
     }
 
-    private boolean wantsItem(final ItemStack itemStack) {
-        return false;
-        //return this.hasActiveRaid() && itemStack.is((Item)Items.BANNER.white());
+    private boolean wantsItem(final @NonNull ItemStack itemStack) {
+        return itemStack.is(Items.BANNER.red());
     }
 
     @Override

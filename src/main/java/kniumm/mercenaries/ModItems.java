@@ -35,5 +35,9 @@ public class ModItems {
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register((creativeTab) -> {
             creativeTab.accept(Allegiance.getAllegianceBannerInstance());
         });
+
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COMBAT).register((creativeTab) -> {
+            creativeTab.accept(Allegiance.getAllegianceShieldInstance());
+        });
     }
 }
