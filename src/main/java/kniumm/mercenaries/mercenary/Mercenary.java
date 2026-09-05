@@ -2,6 +2,7 @@ package kniumm.mercenaries.mercenary;
 
 import kniumm.mercenaries.AbstractArmedVillager;
 import kniumm.mercenaries.DefendVillageTargetGoal;
+import kniumm.mercenaries.Mercenaries;
 import kniumm.mercenaries.RangedCrossbowAttackGoal;
 import kniumm.mercenaries.allegiance.Allegiance;
 import net.minecraft.core.BlockPos;
@@ -57,10 +58,20 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
     private long persistentAngerEndTime;
     private @Nullable EntityReference<LivingEntity> persistentAngerTarget;
 
+    private boolean randomizeEquipment;
+
     public Mercenary(final EntityType<? extends AbstractVillager> type, final Level level) {
         super(type, level);
 
         this.getNavigation().setCanOpenDoors(true);
+    }
+
+    public boolean shouldRandomize() {
+        return this.randomizeEquipment;
+    }
+
+    public void setShouldRandomize(boolean randomizeEquipment) {
+        this.randomizeEquipment = randomizeEquipment;
     }
 
     protected void registerGoals() {
@@ -140,6 +151,7 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
     protected void addAdditionalSaveData(final @NonNull ValueOutput output) {
         super.addAdditionalSaveData(output);
         this.writeInventoryToTag(output);
+        output.putBoolean("RandomizeEquipment", this.randomizeEquipment);
     }
 
     @Override
@@ -158,6 +170,7 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
         super.readAdditionalSaveData(input);
         this.readInventoryFromTag(input);
         this.setCanPickUpLoot(true);
+        this.randomizeEquipment = input.getBooleanOr("RandomizeEquipment", false);
     }
 
     @Override
