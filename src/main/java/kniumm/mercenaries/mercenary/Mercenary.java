@@ -205,7 +205,7 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
     }
 
     private @NonNull ItemStack createSpawnWeapon() {
-        return (double)this.random.nextFloat() < (double)0.5F ? new ItemStack(Items.CROSSBOW) : new ItemStack(this.random.nextInt(2) == 0 ? Items.IRON_AXE : Items.IRON_SWORD);
+        return this.random.nextInt(3) == 0 ? new ItemStack(Items.CROSSBOW) : new ItemStack(this.random.nextInt(2) == 0 ? Items.IRON_AXE : Items.IRON_SWORD);
     }
 
     private @NonNull ItemStack createSpawnOffhand() {
