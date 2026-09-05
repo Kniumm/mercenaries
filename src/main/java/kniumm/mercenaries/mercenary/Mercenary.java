@@ -175,8 +175,8 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
         RandomSource random = level.getRandom();
 
         this.setItemSlot(EquipmentSlot.MAINHAND, this.createSpawnWeapon());
-        this.setItemSlot(EquipmentSlot.OFFHAND, this.createSpawnOffhand());
         this.populateDefaultEquipmentSlots(random, difficulty);
+        this.setItemSlot(EquipmentSlot.OFFHAND, this.createSpawnOffhand());
         this.populateDefaultEquipmentEnchantments(level, random, difficulty);
         return super.finalizeSpawn(level, difficulty, spawnReason, groupData);
     }
@@ -217,7 +217,7 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
 
         ItemStack head = this.getItemBySlot(EquipmentSlot.HEAD);
 
-        return (double) this.random.nextFloat() < (double)0.5F ? ItemStack.EMPTY : head.is(Items.BANNER.red()) ? new ItemStack(Items.SHIELD) : Allegiance.getAllegianceShieldInstance();
+        return (double) this.random.nextFloat() < (double)0.5F ? ItemStack.EMPTY : head.is(Items.BANNER.red()) || (double) this.random.nextFloat() < (double)0.5F ? new ItemStack(Items.SHIELD) : Allegiance.getAllegianceShieldInstance();
     }
 
     @Override
