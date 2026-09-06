@@ -98,7 +98,7 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
     }
 
     public static AttributeSupplier.@NonNull Builder createAttributes() {
-        return Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.35F).add(Attributes.MAX_HEALTH, 24.0F).add(Attributes.ATTACK_DAMAGE, 5.0F).add(Attributes.FOLLOW_RANGE, 32.0F);
+        return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.35F).add(Attributes.MAX_HEALTH, 24.0F).add(Attributes.ATTACK_DAMAGE, 5.0F).add(Attributes.FOLLOW_RANGE, 32.0F);
     }
 
     @Override
