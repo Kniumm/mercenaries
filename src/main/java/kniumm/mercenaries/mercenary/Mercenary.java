@@ -102,6 +102,11 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
     }
 
     @Override
+    public boolean isPersistenceRequired() {
+        return true;
+    }
+
+    @Override
     public @NonNull ItemStack getProjectile(final @NonNull ItemStack heldWeapon) {
         if (heldWeapon.getItem() instanceof ProjectileWeaponItem) {
             Predicate<ItemStack> supportedProjectiles = ((ProjectileWeaponItem)heldWeapon.getItem()).getSupportedHeldProjectiles();
