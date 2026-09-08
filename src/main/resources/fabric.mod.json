@@ -2,14 +2,15 @@
 	"schemaVersion": 1,
 	"id": "mercenaries",
 	"version": "${version}",
-	"name": "mercenaries",
-	"description": "Add mercenaries to Minecraft",
+	"name": "Mercenaries",
+	"description": "Adds a new villager-based faction to the Overworld, whose mercenaries can be recruited by both villages and players.",
 	"authors": [
 		"Kniumm"
 	],
 	"contact": {
-		"homepage": "https://github.com/Kniumm/mercenaries",
-		"sources": "https://github.com/Kniumm/mercenaries"
+		"homepage": "https://modrinth.com/mod/mercenaries",
+		"sources": "https://github.com/Kniumm/mercenaries",
+		"issues": "https://github.com/Kniumm/mercenaries/issues"
 	},
 	"license": "MIT",
 	"icon": "assets/mercenaries/icon.png",
