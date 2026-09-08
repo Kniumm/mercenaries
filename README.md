@@ -1,3 +1,5 @@
+![The mercenaries mod title](https://cdn.modrinth.com/data/cached_images/d55619cd329e928f51b350efe0bdcbdd8f9c57c4.png)
+
 # Description
 Adds a new villager-based faction to the Overworld, whose mercenaries can be recruited by both villages and players.
 
