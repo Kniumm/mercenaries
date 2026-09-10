@@ -18,6 +18,10 @@ The following asset is derived from the Minecraft Emerald texture:
 
 - `src/main/resources/assets/mercenaries/textures/entity/mercenary.png`
 
+The following assets are derived from the Minecraft Villager Spawn Egg texture:
+
+- `src/main/resources/assets/mercenaries/textures/item/mercenary_spawn_egg.png`
+
 These assets are not covered by Mercenaries's MIT License.
 
 The original Minecraft material remains subject to the rights
