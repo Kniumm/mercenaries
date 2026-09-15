@@ -8,6 +8,7 @@ import org.jspecify.annotations.NonNull;
 
 public class ModItemIds {
     public static final ResourceKey<Item> MERCENARY_SPAWN_EGG = create("mercenary_spawn_egg");
+    public static final ResourceKey<Item> ALLEGIANCE_HORN = create("allegiance_horn");
 
     private static @NonNull ResourceKey<Item> create(String name) {
         Identifier id = Identifier.fromNamespaceAndPath(Mercenaries.MOD_ID, name);
