@@ -5,6 +5,7 @@ import kniumm.mercenaries.DefendVillageTargetGoal;
 import kniumm.mercenaries.Mercenaries;
 import kniumm.mercenaries.RangedCrossbowAttackGoal;
 import kniumm.mercenaries.allegiance.Allegiance;
+import kniumm.mercenaries.world.entity.Allegiant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -50,7 +51,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMob, InventoryCarrier, NeutralMob {
+public class Mercenary extends Allegiant implements CrossbowAttackMob, InventoryCarrier, NeutralMob {
     private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW;
     private final SimpleContainer inventory = new SimpleContainer(5);
 
@@ -60,7 +61,7 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
 
     private boolean randomizeEquipment;
 
-    public Mercenary(final EntityType<? extends AbstractVillager> type, final Level level) {
+    public Mercenary(final EntityType<? extends Allegiant> type, final Level level) {
         super(type, level);
 
         this.getNavigation().setCanOpenDoors(true);
@@ -247,6 +248,11 @@ public class Mercenary extends AbstractArmedVillager implements CrossbowAttackMo
                 EnchantmentHelper.enchantItemFromProvider(weapon, level.registryAccess(), VanillaEnchantmentProviders.PILLAGER_SPAWN_CROSSBOW, difficulty, random);
             }
         }
+
+    }
+
+    @Override
+    public void applyRallyBuffs(ServerLevel level, int wave, boolean isCaptain) {
 
     }
 

@@ -1,5 +1,8 @@
 package kniumm.mercenaries.world.item;
 
+import kniumm.mercenaries.Mercenaries;
+import kniumm.mercenaries.allegiance.Allegiance;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -18,8 +21,17 @@ public class AllegianceHornItem extends InstrumentItem {
     public @NonNull InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand hand) {
         var result = super.use(level, player, hand);
 
-        if (result == InteractionResult.CONSUME) {
+        if (result == InteractionResult.CONSUME && level instanceof ServerLevel serverLevel) {
             ItemStack itemStack = player.getItemInHand(hand);
+
+            Allegiance allegiance = new Allegiance(player.blockPosition(), serverLevel.getDifficulty());
+            boolean success = allegiance.trySpawnRally(player.blockPosition(), serverLevel);
+
+            if (!success) {
+                Mercenaries.LOGGER.warn("Failed to find a suitable spawn position!");
+
+                return InteractionResult.FAIL;
+            }
 
             itemStack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
         }
