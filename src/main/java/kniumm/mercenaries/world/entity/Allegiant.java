@@ -22,7 +22,7 @@ public abstract class Allegiant extends AbstractArmedVillager {
     }
 
     public @Nullable SpawnGroupData finalizeSpawn(final ServerLevelAccessor level, final DifficultyInstance difficulty, final EntitySpawnReason spawnReason, final @Nullable SpawnGroupData groupData) {
-        this.setCanJoinRally(!this.is(EntityTypes.WITCH) || spawnReason != EntitySpawnReason.NATURAL);
+        this.setCanJoinRally(spawnReason != EntitySpawnReason.NATURAL);
         return super.finalizeSpawn(level, difficulty, spawnReason, groupData);
     }
 
