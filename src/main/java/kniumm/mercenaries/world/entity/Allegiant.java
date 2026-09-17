@@ -2,13 +2,13 @@ package kniumm.mercenaries.world.entity;
 
 import kniumm.mercenaries.AbstractArmedVillager;
 import kniumm.mercenaries.allegiance.Allegiance;
+import kniumm.mercenaries.world.entity.allegiance.Rallies;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -17,13 +17,15 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
 public abstract class Allegiant extends AbstractArmedVillager {
     private boolean canJoinRally;
-    private Allegiance allegiance;
+    private Allegiance rally;
     private int wave;
     private Optional<Player> employer;
 
@@ -54,16 +56,42 @@ public abstract class Allegiant extends AbstractArmedVillager {
         return this.canJoinRally;
     }
 
-    public void setCanJoinRally(final boolean canJoinRaid) {
-        this.canJoinRally = canJoinRaid;
+    public void setCanJoinRally(final boolean canJoinRally) {
+        this.canJoinRally = canJoinRally;
     }
 
-    public void setCurrentRally(final @Nullable Allegiance allegiance) {
-        this.allegiance = allegiance;
+    public void setCurrentRally(final @Nullable Allegiance rally) {
+        this.rally = rally;
     }
 
     public @Nullable Allegiance getCurrentRally() {
-        return this.allegiance;
+        return this.rally;
+    }
+
+    @Override
+    protected void addAdditionalSaveData(final ValueOutput output) {
+        super.addAdditionalSaveData(output);
+
+        output.putInt("Wave", this.wave);
+        output.putBoolean("CanJoinRally", this.canJoinRally);
+
+        if (this.rally != null && this.level() instanceof ServerLevel level) {
+            Rallies.get(level).getId(this.rally).ifPresent(id -> output.putInt("RallyId", id));
+        }
+    }
+
+    @Override
+    protected void readAdditionalSaveData(final ValueInput input) {
+        super.readAdditionalSaveData(input);
+
+        this.wave = input.getIntOr("Wave", 0);
+        this.canJoinRally = input.getBooleanOr("CanJoinRally", false);
+
+        if (this.level() instanceof ServerLevel level) {
+            input.getInt("RallyId").ifPresent(rallyId -> {
+                this.rally = Rallies.get(level).getRally(rallyId);
+            });
+        }
     }
 
     public void resetEmployer() {
