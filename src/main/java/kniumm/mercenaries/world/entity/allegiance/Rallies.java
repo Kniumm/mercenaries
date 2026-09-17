@@ -74,6 +74,7 @@ public class Rallies extends SavedData {
         int id = this.rallyMap.size();
 
         this.rallyMap.put(id, allegiance);
+        this.setDirty();
 
         return id;
     }
