@@ -46,11 +46,7 @@ public class FollowEmployerGoal extends Goal {
             return false;
         }
 
-        Mercenaries.LOGGER.info("canUse");
-
         if (!employer.get().hasEffect(MobEffects.RALLYING)) {
-            Mercenaries.LOGGER.info("reset!");
-
             this.allegiant.resetEmployer();
 
             this.employer = null;

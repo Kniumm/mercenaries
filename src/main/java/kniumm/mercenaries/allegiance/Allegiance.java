@@ -109,8 +109,6 @@ public class Allegiance {
         int attempt = 0;
 
         while (this.shouldSpawnGroup()) {
-            Mercenaries.LOGGER.info("Attempting to spawn group");
-
             BlockPos spawnPos = this.waveSpawnPos.orElseGet(() -> this.findRandomSpawnPos(level, 20));
 
             if (spawnPos != null) {
@@ -239,12 +237,6 @@ public class Allegiance {
             int spawnZ = playerPos.getZ() + Mth.floor(Mth.sin(angle) * 32.0F * howFar) + this.random.nextInt(3) * Mth.floor(howFar);
             int spawnY = level.getHeight(Heightmap.Types.WORLD_SURFACE, spawnX, spawnZ);
 
-            Mercenaries.LOGGER.info("spawnX={}", spawnX);
-            Mercenaries.LOGGER.info("spawnZ={}", spawnZ);
-            Mercenaries.LOGGER.info("spawnY={}", spawnY);
-            Mercenaries.LOGGER.info("(Mth.abs(spawnY - playerPos.getY()) <= 9) = {}", Mth.abs(spawnY - playerPos.getY()) <= 96);
-            Mercenaries.LOGGER.info("(!level.isVillage(spawnPos) || secondsRemaining <= 7) = {}", !level.isVillage(spawnPos) || secondsRemaining <= 7);
-
             if (Mth.abs(spawnY - playerPos.getY()) <= 96) {
                 spawnPos.set(spawnX, spawnY, spawnZ);
 
@@ -266,19 +258,12 @@ public class Allegiance {
         int groupNumber = this.groupsSpawned + 1;
         DifficultyInstance difficulty = level.getCurrentDifficultyAt(pos);
 
-        Mercenaries.LOGGER.info("groupNumber={}", groupNumber);
-
         for(Allegiance.AllegiantType allegiantType : Allegiance.AllegiantType.VALUES) {
-            Mercenaries.LOGGER.info("allegiantType={}", allegiantType);
 
             int numSpawns = this.getDefaultNumSpawns(allegiantType, groupNumber) + this.getPotentialBonusSpawns(allegiantType, this.random, groupNumber, difficulty);
 
-            Mercenaries.LOGGER.info("numSpawns={}", numSpawns);
-
             for(int i = 0; i < numSpawns; ++i) {
                 Allegiant allegiant = allegiantType.entityType.create(level, EntitySpawnReason.EVENT);
-
-                Mercenaries.LOGGER.info("allegiant={}", allegiant);
 
                 if (allegiant == null) {
                     break;
