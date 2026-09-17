@@ -26,6 +26,16 @@ public abstract class Allegiant extends AbstractArmedVillager {
         return super.finalizeSpawn(level, difficulty, spawnReason, groupData);
     }
 
+    @Override
+    public boolean removeWhenFarAway(final double distSqr) {
+        return this.getCurrentRally() == null && super.removeWhenFarAway(distSqr);
+    }
+
+    @Override
+    public boolean requiresCustomPersistence() {
+        return super.requiresCustomPersistence() || this.getCurrentRally() != null;
+    }
+
     public abstract void applyRallyBuffs(final ServerLevel level, final int wave, final boolean isCaptain);
 
     public boolean canJoinRally() {

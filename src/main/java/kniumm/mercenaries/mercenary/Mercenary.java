@@ -103,11 +103,6 @@ public class Mercenary extends Allegiant implements CrossbowAttackMob, Inventory
     }
 
     @Override
-    public boolean isPersistenceRequired() {
-        return true;
-    }
-
-    @Override
     public @NonNull ItemStack getProjectile(final @NonNull ItemStack heldWeapon) {
         if (heldWeapon.getItem() instanceof ProjectileWeaponItem) {
             Predicate<ItemStack> supportedProjectiles = ((ProjectileWeaponItem)heldWeapon.getItem()).getSupportedHeldProjectiles();
