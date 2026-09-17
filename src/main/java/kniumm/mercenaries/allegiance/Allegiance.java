@@ -242,13 +242,9 @@ public class Allegiance {
                 if (!level.isVillage(spawnPos) || secondsRemaining <= 7) {
                     int delta = 10;
 
-//                    if (level.hasChunksAt(spawnPos.getX() - delta, spawnPos.getZ() - delta, spawnPos.getX() + delta, spawnPos.getZ() + delta) && level.isPositionEntityTicking(spawnPos) && (level.getBlockState(spawnPos.below()).is(Blocks.SNOW) && level.getBlockState(spawnPos).isAir())) {
-//                        Mercenaries.LOGGER.info("ok");
-//
-//                        return spawnPos;
-//                    }
-
-                    return spawnPos;
+                    if (level.hasChunksAt(spawnPos.getX() - delta, spawnPos.getZ() - delta, spawnPos.getX() + delta, spawnPos.getZ() + delta) && level.isPositionEntityTicking(spawnPos)) {
+                        return spawnPos;
+                    }
                 }
             }
         }
