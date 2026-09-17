@@ -3,6 +3,8 @@ package kniumm.mercenaries.world.entity.ai.goal;
 import java.util.EnumSet;
 import java.util.Optional;
 
+import kniumm.mercenaries.Mercenaries;
+import kniumm.mercenaries.world.effect.MobEffects;
 import kniumm.mercenaries.world.entity.Allegiant;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
@@ -41,6 +43,18 @@ public class FollowEmployerGoal extends Goal {
     public boolean canUse() {
         Optional<Player> employer = this.allegiant.fetchEmployer();
         if (employer.isEmpty()) {
+            return false;
+        }
+
+        Mercenaries.LOGGER.info("canUse");
+
+        if (!employer.get().hasEffect(MobEffects.RALLYING)) {
+            Mercenaries.LOGGER.info("reset!");
+
+            this.allegiant.resetEmployer();
+
+            this.employer = null;
+
             return false;
         }
 

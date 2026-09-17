@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import kniumm.mercenaries.Mercenaries;
 import kniumm.mercenaries.ModEntityTypes;
+import kniumm.mercenaries.world.effect.MobEffects;
 import kniumm.mercenaries.world.entity.Allegiant;
 import kniumm.mercenaries.world.entity.allegiance.Rallies;
 import net.minecraft.SharedConstants;
@@ -27,7 +28,6 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raid;
@@ -95,6 +95,14 @@ public class Allegiance {
 
     public void tick(final ServerLevel level) {
         if (this.isStopped()) {
+            return;
+        }
+
+        Player player = this.getPlayer(level.getServer());
+
+        if (player != null && !player.hasEffect(MobEffects.RALLYING)) {
+            this.stop();
+
             return;
         }
 

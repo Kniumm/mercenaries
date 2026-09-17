@@ -76,9 +76,14 @@ public abstract class Allegiant extends AbstractArmedVillager {
         }
 
         Allegiance rally = this.getCurrentRally();
+
+        if (rally == null || rally.isStopped()) {
+            return Optional.empty();
+        }
+
         MinecraftServer server = this.level().getServer();
 
-        if (rally == null || server == null) {
+        if (server == null) {
             return Optional.empty();
         }
 
