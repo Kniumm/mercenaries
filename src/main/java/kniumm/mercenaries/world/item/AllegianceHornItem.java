@@ -27,7 +27,7 @@ public class AllegianceHornItem extends InstrumentItem {
         if (result == InteractionResult.CONSUME && level instanceof ServerLevel serverLevel) {
             ItemStack itemStack = player.getItemInHand(hand);
 
-            Allegiance rally = new Allegiance(player.blockPosition(), serverLevel.getDifficulty());
+            Allegiance rally = new Allegiance(player.getUUID(), serverLevel.getDifficulty());
             Rallies.get(serverLevel).addRally(rally);
             /*boolean success = allegiance.trySpawnRally(player.blockPosition(), serverLevel);
 

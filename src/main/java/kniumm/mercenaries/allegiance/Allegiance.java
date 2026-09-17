@@ -11,6 +11,7 @@ import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -31,6 +32,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -49,7 +51,7 @@ public class Allegiance {
     public static final Codec<Allegiance> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.INT.fieldOf("groups_spawned").forGetter(r -> r.groupsSpawned),
-                    BlockPos.CODEC.fieldOf("center").forGetter(r -> r.center),
+                    UUIDUtil.CODEC.fieldOf("player_uuid").forGetter(r -> r.playerUUID),
                     Codec.INT.fieldOf("group_count").forGetter(r -> r.numGroups),
                     RallyStatus.CODEC.fieldOf("status").forGetter(r -> r.status)
             ).apply(instance, Allegiance::new)
@@ -60,20 +62,20 @@ public class Allegiance {
 
     private int groupsSpawned = 0;
     private final RandomSource random = RandomSource.create();
-    private BlockPos center;
+    private UUID playerUUID;
     private final int numGroups;
     private Allegiance.RallyStatus status;
     private Optional<BlockPos> waveSpawnPos = Optional.empty();
 
-    public Allegiance(final BlockPos center, final Difficulty difficulty) {
-        this.center = center;
+    public Allegiance(final UUID playerUUID, final Difficulty difficulty) {
+        this.playerUUID = playerUUID;
         this.numGroups = Allegiance.getNumGroups(difficulty);
         this.status = Allegiance.RallyStatus.ONGOING;
     }
 
-    private Allegiance(final int groupsSpawned, final BlockPos center, final int numGroups, final Allegiance.RallyStatus status) {
+    private Allegiance(final int groupsSpawned, final UUID playerUUID, final int numGroups, final Allegiance.RallyStatus status) {
         this.groupsSpawned = groupsSpawned;
-        this.center = center;
+        this.playerUUID = playerUUID;
         this.numGroups = numGroups;
         this.status = status;
     }
@@ -118,8 +120,8 @@ public class Allegiance {
         this.setDirty(level);
     }
 
-    public boolean trySpawnRally(BlockPos center, ServerLevel serverLevel) {
-        this.center = center;
+    public boolean trySpawnRally(UUID playerUUID, ServerLevel serverLevel) {
+        this.playerUUID = playerUUID;
         this.waveSpawnPos = this.getValidSpawnPos(serverLevel);
 
         if (this.waveSpawnPos.isEmpty()) {
@@ -217,7 +219,7 @@ public class Allegiance {
         return spawnPos != null ? Optional.of(spawnPos) : Optional.empty();
     }
 
-    private @Nullable BlockPos findRandomSpawnPos(final ServerLevel level, final int maxTries) {
+    private @Nullable BlockPos findRandomSpawnPos(final @NonNull ServerLevel level, final int maxTries) {
         int secondsRemaining = 12;
 
         float howFar = 0.22F * (float)secondsRemaining - 0.24F;
@@ -226,20 +228,28 @@ public class Allegiance {
 
         float startAngle = this.random.nextFloat() * ((float)Math.PI * 2F);
 
+        Player player = level.getServer().getPlayerList().getPlayer(this.playerUUID);
+
+        if (player == null) {
+            return null;
+        }
+
+        BlockPos playerPos = player.blockPosition();
+
         for(int i = 0; i < maxTries; ++i) {
             float angle = startAngle + (float)Math.PI * (float)i / 8.0F;
 
-            int spawnX = this.center.getX() + Mth.floor(Mth.cos(angle) * 32.0F * howFar) + this.random.nextInt(3) * Mth.floor(howFar);
-            int spawnZ = this.center.getZ() + Mth.floor(Mth.sin(angle) * 32.0F * howFar) + this.random.nextInt(3) * Mth.floor(howFar);
+            int spawnX = playerPos.getX() + Mth.floor(Mth.cos(angle) * 32.0F * howFar) + this.random.nextInt(3) * Mth.floor(howFar);
+            int spawnZ = playerPos.getZ() + Mth.floor(Mth.sin(angle) * 32.0F * howFar) + this.random.nextInt(3) * Mth.floor(howFar);
             int spawnY = level.getHeight(Heightmap.Types.WORLD_SURFACE, spawnX, spawnZ);
 
             Mercenaries.LOGGER.info("spawnX={}", spawnX);
             Mercenaries.LOGGER.info("spawnZ={}", spawnZ);
             Mercenaries.LOGGER.info("spawnY={}", spawnY);
-            Mercenaries.LOGGER.info("(Mth.abs(spawnY - this.center.getY()) <= 9) = {}", Mth.abs(spawnY - this.center.getY()) <= 96);
+            Mercenaries.LOGGER.info("(Mth.abs(spawnY - playerPos.getY()) <= 9) = {}", Mth.abs(spawnY - playerPos.getY()) <= 96);
             Mercenaries.LOGGER.info("(!level.isVillage(spawnPos) || secondsRemaining <= 7) = {}", !level.isVillage(spawnPos) || secondsRemaining <= 7);
 
-            if (Mth.abs(spawnY - this.center.getY()) <= 96) {
+            if (Mth.abs(spawnY - playerPos.getY()) <= 96) {
                 spawnPos.set(spawnX, spawnY, spawnZ);
 
                 if (!level.isVillage(spawnPos) || secondsRemaining <= 7) {
