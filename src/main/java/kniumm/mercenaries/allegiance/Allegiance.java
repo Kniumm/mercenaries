@@ -28,10 +28,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.*;
@@ -82,6 +79,10 @@ public class Allegiance {
 
     public void stop() {
         this.status = Allegiance.RallyStatus.STOPPED;
+    }
+
+    public Player getPlayer(@NonNull MinecraftServer server) {
+        return server.getPlayerList().getPlayer(this.playerUUID);
     }
 
     public boolean isStopped() {
@@ -215,7 +216,7 @@ public class Allegiance {
 
         float startAngle = this.random.nextFloat() * ((float)Math.PI * 2F);
 
-        Player player = level.getServer().getPlayerList().getPlayer(this.playerUUID);
+        Player player = this.getPlayer(level.getServer());
 
         if (player == null) {
             return null;

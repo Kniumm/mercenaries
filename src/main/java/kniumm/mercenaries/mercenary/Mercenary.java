@@ -6,6 +6,7 @@ import kniumm.mercenaries.Mercenaries;
 import kniumm.mercenaries.RangedCrossbowAttackGoal;
 import kniumm.mercenaries.allegiance.Allegiance;
 import kniumm.mercenaries.world.entity.Allegiant;
+import kniumm.mercenaries.world.entity.ai.goal.FollowEmployerGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -83,6 +84,7 @@ public class Mercenary extends Allegiant implements CrossbowAttackMob, Inventory
         this.goalSelector.addGoal(3, new RangedCrossbowAttackGoal<>(this, 1.0F, 8.0F));
         this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0F, true));
         this.goalSelector.addGoal(4, new MoveBackToVillageGoal(this, 0.6, false));
+        this.goalSelector.addGoal(4, new FollowEmployerGoal(this, 1.0, 10.0F, 2.0F));
         this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 15.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 15.0F));
