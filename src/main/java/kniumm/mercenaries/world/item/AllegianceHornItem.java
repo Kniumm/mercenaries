@@ -26,17 +26,9 @@ public class AllegianceHornItem extends InstrumentItem {
 
         if (result == InteractionResult.CONSUME && level instanceof ServerLevel serverLevel) {
             ItemStack itemStack = player.getItemInHand(hand);
-
             Allegiance rally = new Allegiance(player.getUUID(), serverLevel.getDifficulty());
+
             Rallies.get(serverLevel).addRally(rally);
-            /*boolean success = allegiance.trySpawnRally(player.blockPosition(), serverLevel);
-
-            if (!success) {
-                Mercenaries.LOGGER.warn("Failed to find a suitable spawn position!");
-
-                return InteractionResult.FAIL;
-            }*/
-
             player.addEffect(new MobEffectInstance(MobEffects.RALLYING, 20 * 60 * 5, 0, false, false, true));
             itemStack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
         }

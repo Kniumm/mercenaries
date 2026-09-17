@@ -120,19 +120,6 @@ public class Allegiance {
         this.setDirty(level);
     }
 
-    public boolean trySpawnRally(UUID playerUUID, ServerLevel serverLevel) {
-        this.playerUUID = playerUUID;
-        this.waveSpawnPos = this.getValidSpawnPos(serverLevel);
-
-        if (this.waveSpawnPos.isEmpty()) {
-            return false;
-        }
-
-        this.spawnGroup(serverLevel, this.waveSpawnPos.get());
-
-        return true;
-    }
-
     public static @NonNull BannerPatternLayers getBannerPatternLayers(@NonNull Registry<BannerPattern> bannerPatternRegistry, boolean shield) {
         BannerPatternLayers.Builder builder = new BannerPatternLayers.Builder();
 
