@@ -22,6 +22,10 @@ The following assets are derived from the Minecraft Villager Spawn Egg texture:
 
 - `src/main/resources/assets/mercenaries/textures/item/mercenary_spawn_egg.png`
 
+The following assets are derived from the Minecraft Goat Horn texture:
+
+- `src/main/resources/assets/mercenaries/textures/item/allegiance_horn.png`
+
 These assets are not covered by Mercenaries's MIT License.
 
 The original Minecraft material remains subject to the rights
