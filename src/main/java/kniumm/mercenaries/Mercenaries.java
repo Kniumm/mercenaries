@@ -42,6 +42,11 @@ public class Mercenaries implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTING.register(ModStructurePoolElements::initialize);
 		ServerLifecycleEvents.SERVER_STARTING.register(Allegiance::initialize);
 
+		ServerTickEvents.END_LEVEL_TICK.register(level -> {
+				var rallies = Rallies.get(level);
+				rallies.tick(level);
+		});
+
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			if (entity instanceof Mercenary mercenary && mercenary.shouldRandomize()) {
 				mercenary.setShouldRandomize(false);

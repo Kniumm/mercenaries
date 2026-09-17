@@ -1,23 +1,37 @@
 package kniumm.mercenaries.allegiance;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import kniumm.mercenaries.Mercenaries;
 import kniumm.mercenaries.ModEntityTypes;
 import kniumm.mercenaries.world.entity.Allegiant;
+import kniumm.mercenaries.world.entity.allegiance.Rallies;
+import net.minecraft.SharedConstants;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.entity.BannerPattern;
@@ -29,20 +43,79 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class Allegiance {
+    public static final Codec<Allegiance> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Codec.INT.fieldOf("groups_spawned").forGetter(r -> r.groupsSpawned),
+                    BlockPos.CODEC.fieldOf("center").forGetter(r -> r.center),
+                    Codec.INT.fieldOf("group_count").forGetter(r -> r.numGroups),
+                    RallyStatus.CODEC.fieldOf("status").forGetter(r -> r.status)
+            ).apply(instance, Allegiance::new)
+    );
+
     public static ItemStackTemplate allegianceBannerTemplate;
     public static ItemStackTemplate allegianceShieldTemplate;
 
-    private int groupsSpawned;
+    private int groupsSpawned = 0;
     private final RandomSource random = RandomSource.create();
     private BlockPos center;
-    private Optional<BlockPos> waveSpawnPos;
+    private final int numGroups;
+    private Allegiance.RallyStatus status;
+    private Optional<BlockPos> waveSpawnPos = Optional.empty();
 
     public Allegiance(final BlockPos center, final Difficulty difficulty) {
-        this.waveSpawnPos = Optional.empty();
         this.center = center;
-        // this.numGroups = this.getNumGroups(difficulty);
+        this.numGroups = Allegiance.getNumGroups(difficulty);
+        this.status = Allegiance.RallyStatus.ONGOING;
+    }
+
+    private Allegiance(final int groupsSpawned, final BlockPos center, final int numGroups, final Allegiance.RallyStatus status) {
+        this.groupsSpawned = groupsSpawned;
+        this.center = center;
+        this.numGroups = numGroups;
+        this.status = status;
+    }
+
+    public void stop() {
+        this.status = Allegiance.RallyStatus.STOPPED;
+    }
+
+    public boolean isStopped() {
+        return this.status == Allegiance.RallyStatus.STOPPED;
+    }
+
+    private void setDirty(final @NonNull ServerLevel level) {
+        Rallies.get(level).setDirty();
+    }
+
+    public void tick(final ServerLevel level) {
+        if (this.isStopped()) {
+            return;
+        }
+
+        int attempt = 0;
+
+        while (this.shouldSpawnGroup()) {
+            Mercenaries.LOGGER.info("Attempting to spawn group");
+
+            BlockPos spawnPos = this.waveSpawnPos.orElseGet(() -> this.findRandomSpawnPos(level, 20));
+
+            if (spawnPos != null) {
+                this.spawnGroup(level, spawnPos);
+            } else {
+                attempt++;
+            }
+
+            if (attempt > 5) {
+                this.stop();
+
+                break;
+            }
+        }
+
+        this.setDirty(level);
     }
 
     public boolean trySpawnRally(BlockPos center, ServerLevel serverLevel) {
@@ -220,12 +293,16 @@ public class Allegiance {
         }
 
         this.waveSpawnPos = Optional.empty();
+        this.groupsSpawned++;
+        this.setDirty(level);
     }
 
     public void joinRally(final ServerLevel level, final int groupNumber, final @NonNull Allegiant allegiant, final @Nullable BlockPos pos, final boolean exists) {
         allegiant.setCurrentRally(this);
         allegiant.setWave(groupNumber);
         allegiant.setCanJoinRally(true);
+
+        this.setDirty(level);
 
         if (!exists && pos != null) {
             allegiant.setPos((double)pos.getX() + (double)0.5F, (double)pos.getY() + (double)1.0F, (double)pos.getZ() + (double)0.5F);
@@ -234,6 +311,10 @@ public class Allegiance {
             allegiant.setOnGround(true);
             level.addFreshEntityWithPassengers(allegiant);
         }
+    }
+
+    private boolean shouldSpawnGroup() {
+        return (this.groupsSpawned < this.numGroups);
     }
 
     private int getDefaultNumSpawns(final Allegiance.@NonNull AllegiantType type, final int wav) {
@@ -250,6 +331,11 @@ public class Allegiance {
             default:
                 return 0;
         }
+    }
+
+    @Contract(pure = true)
+    public static int getNumGroups(final @NonNull Difficulty difficulty) {
+        return 1;
     }
 
     public static void initialize(@NonNull MinecraftServer server) {
@@ -269,6 +355,23 @@ public class Allegiance {
         AllegiantType(final EntityType<? extends Allegiant> entityType, final int[] spawnsPerWaveBeforeBonus) {
             this.entityType = entityType;
             this.spawnsPerWaveBeforeBonus = spawnsPerWaveBeforeBonus;
+        }
+    }
+
+    private enum RallyStatus implements StringRepresentable {
+        ONGOING("ongoing"),
+        STOPPED("stopped");
+
+        public static final Codec<Allegiance.RallyStatus> CODEC = StringRepresentable.fromEnum(Allegiance.RallyStatus::values);
+        private final String name;
+
+        RallyStatus(final String name) {
+            this.name = name;
+        }
+
+        @Override
+        public @NonNull String getSerializedName() {
+            return this.name;
         }
     }
 }
