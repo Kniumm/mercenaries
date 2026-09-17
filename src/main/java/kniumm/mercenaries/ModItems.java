@@ -36,7 +36,7 @@ public class ModItems {
 
     public static void initialize() {
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register((creativeTab) -> {
-            creativeTab.accept(ModItems.MERCENARY_SPAWN_EGG);
+            creativeTab.insertAfter(Items.WANDERING_TRADER_SPAWN_EGG, ModItems.MERCENARY_SPAWN_EGG);
         });
 
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register((creativeTab) -> {
