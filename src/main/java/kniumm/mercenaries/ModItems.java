@@ -6,7 +6,9 @@ import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.InstrumentComponent;
 import org.jspecify.annotations.NonNull;
@@ -40,11 +42,11 @@ public class ModItems {
         });
 
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register((creativeTab) -> {
-            creativeTab.accept(Allegiance.getAllegianceBannerInstance());
+            creativeTab.insertAfter(Items.BANNER.white(), Allegiance.getAllegianceBannerInstance());
         });
 
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.COMBAT).register((creativeTab) -> {
-            creativeTab.accept(Allegiance.getAllegianceShieldInstance());
+            creativeTab.insertAfter(Items.SHIELD, Allegiance.getAllegianceShieldInstance());
         });
 
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register((creativeTab) -> {
