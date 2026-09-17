@@ -5,10 +5,13 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import kniumm.mercenaries.allegiance.Allegiance;
 import kniumm.mercenaries.mercenary.Mercenary;
 import kniumm.mercenaries.mixin.StructureTemplatePoolAccessor;
+import kniumm.mercenaries.world.effect.MobEffects;
+import kniumm.mercenaries.world.entity.allegiance.Rallies;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -34,6 +37,7 @@ public class Mercenaries implements ModInitializer {
 		ModEntityTypes.initialize();
 		ModEntityTypes.registerAttributes();
 		ModItems.initialize();
+		MobEffects.initialize();
 
 		ServerLifecycleEvents.SERVER_STARTING.register(ModStructurePoolElements::initialize);
 		ServerLifecycleEvents.SERVER_STARTING.register(Allegiance::initialize);
